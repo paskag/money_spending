@@ -14,13 +14,8 @@ class MoneySpendings:
         '''
         self.df = df
         self._price_apt = price_apt
-        
-    def process_columns(self):
-        '''
-        Here we process the column names
-        '''
         self.df = self.df.rename({column: column.strip() for column in self.df.columns}, axis=1)
-        
+            
     def info_by_period(self, date_beg="", date_end="", price_apt=None):
         '''
         Here we get tabular information on spending for a given period of time
@@ -78,10 +73,4 @@ class MoneySpendings:
         #total expenses grouped by name
         final = df_cut.groupby("Who").agg({"Price": "sum"}).sort_values("Price", ascending=False) 
         final["Price_apt"] = final["Price"] + self._price_apt / 2
-        display(final)        
-    
-    def start(self):
-        """
-        Start the whole process
-        """
-        self.process_columns()
+        display(final)
