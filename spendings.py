@@ -21,30 +21,27 @@ class MoneySpendings:
         '''
         self.df = self.df.rename({column: column.strip() for column in self.df.columns}, axis=1)
         
-    def info_by_month_manual(self, month="", date_beg="", date_end="", price_apt=None):
+    def info_by_period(self, date_beg="", date_end="", price_apt=None):
         '''
-        Here we get tabular information on spending in a particular month. 
+        Here we get tabular information on spending for a given period of time
         This fuction works manually. We can adjust the dates ourselves. 
-        This is convenient if, for example, the month is counted from a certain date to a certain date.
         
         Args:
-            month (str): The name of the month in English.
             date_beg (str): The starting date from which the beginning of the month will be considered.
             date_end (str): The end date from which the end of the month will be considered. 
             price_apt (int): Сost of rent for an apartment per month in shekels. Default: None
         '''
         if price_apt is None:
             price_apt = self._price_apt
-        month = month.capitalize()
+        period = f'{date_beg} - {date_end}'
         date_beg_dt = datetime.strptime(date_beg, "%d/%m/%Y")
         date_end_dt = datetime.strptime(date_end, "%d/%m/%Y")    
         df_cut = self.df[(self.df["Date"] >= date_beg_dt) & (self.df["Date"] <= date_end_dt)] #we get a dataframe in the given dates
-        self.show_result(df_cut, month=month)
+        self.show_result(df_cut, month=period)
         
-    def info_by_month_automatic(self, year=2024, month=1, price_apt=None):
+    def info_by_month(self, year=2024, month=1, price_apt=None):
         '''
         Here we get tabular information on spending in a particular month. 
-        This fuction works automatically. We just need to specify the month and the year
         
         Args:
             month (int, str): The number of the month or the name of the month in English.
