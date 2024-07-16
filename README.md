@@ -13,6 +13,6 @@ You can get information on your spending for the month
 ## Results
 #### The program produces two tables as a result. The first one shows the expenses grouped by category. The second table shows total expenditures grouped by name. 
 
-![Example](https://drive.google.com/file/d/1t5vbl0P-o4iF18EBTPrthFrxVARscqfn/view?usp=sharing)
+![Example](https://drive.google.com/uc?export=view&id=1t5vbl0P-o4iF18EBTPrthFrxVARscqfn)
 
 
