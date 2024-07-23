@@ -32,7 +32,7 @@ class MoneySpendings:
         date_beg_dt = datetime.strptime(date_beg, "%d/%m/%Y")
         date_end_dt = datetime.strptime(date_end, "%d/%m/%Y")    
         df_cut = self.df[(self.df["Date"] >= date_beg_dt) & (self.df["Date"] <= date_end_dt)] #we get a dataframe in the given dates
-        self.show_result(df_cut, month=period)
+        self.show_result(df_cut, period=period)
         
     def info_by_month(self, year=2024, month=1, price_apt=None):
         '''
@@ -53,24 +53,43 @@ class MoneySpendings:
         last_day = calendar.monthrange(year, month)[-1]
         date_end = datetime(year, month, last_day) 
         df_cut = self.df[(self.df["Date"] >= date_beg) & (self.df["Date"] <= date_end)]
-        self.show_result(df_cut, month=month_title)
+        self.show_result(df_cut, period=month_title)
         
-    def show_result(self, df_cut=None, month=None):
+    def info_by_year(self, year=2024, price_apt=None):
+        '''
+        Here we get tabular information on spending in a particular year. 
+        
+        Args:
+            year (int, str): The number of the year
+            price_apt (int): Сost of rent for an apartment per month in shekels. Default: None
+        '''
+        year = int(year)
+        date_beg = datetime(year, 1, 1)
+        date_end = datetime(year, 12, 31)
+        df_cut = self.df[(self.df["Date"] >= date_beg) & (self.df["Date"] <= date_end)]
+        self.show_result(df_cut, period=year, yearly=True) 
+                
+    def show_result(self, df_cut=None, period=None, yearly=False):
         '''
         Here we show the result
         
         Args:
             df (DataFrame): Dataframe in giving dates
-            month (str): The name of the month in English.
+            period (str): The time period for which the result is calculated.
+            yearly (bool): A marker that indicates whether it is an annual report or not: Default: False
         '''
-        print(f"Spendings in {month}: {df_cut['Price'].sum().round(2)} sheckels")
-        print(f"Spendings in {month} with the appartment: {df_cut['Price'].sum().round(2) + self._price_apt} sheckels")
+        price_apt = self._price_apt * [1, df_cut['Date'].dt.to_period('M').nunique()][yearly] #count how many months
+        final_price = df_cut['Price'].sum().round(2)
+        final_price_apt = final_price + price_apt
+        
+        print(f"Spendings in {period}: {final_price} sheckels")
+        print(f"Spendings in {period} with the appartment: {final_price_apt} sheckels")
 
         category = df_cut.groupby("Category").agg({"Price": "sum", "Category": "count"}).sort_values("Price", ascending=False)
         category = category.rename({"Category": "Count"}, axis=1)
         display(category)
 
         #total expenses grouped by name
-        final = df_cut.groupby("Who").agg({"Price": "sum"}).sort_values("Price", ascending=False) 
-        final["Price_apt"] = final["Price"] + self._price_apt / 2
-        display(final)
+        total = df_cut.groupby("Who").agg({"Price": "sum"}).sort_values("Price", ascending=False) 
+        total["Price_apt"] = total["Price"] + price_apt / 2
+        display(total)
