@@ -10,6 +10,8 @@
 
  * **info_by_year** - You can get information on your spending for the year
 
+ * **annual report** - You can get a detailed annual report. Information will be provided for each month.
+
 
 ## Results
 #### The program produces two tables as a result. The first one shows the expenses grouped by category. The second table shows total expenditures grouped by name. 
