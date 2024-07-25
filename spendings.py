@@ -69,6 +69,32 @@ class MoneySpendings:
         df_cut = self.df[(self.df["Date"] >= date_beg) & (self.df["Date"] <= date_end)]
         self.show_result(df_cut, period=year, yearly=True) 
                 
+    def annual_report(self, year=2024):
+        '''
+        Here we get a detailed annual report. Information will be provided for each month.
+        
+        Args:
+            year (int, str): The number of the year
+        '''
+        year = int(year)
+        date_beg = datetime(year, 1, 1)
+        date_end = datetime(year, 12, 31)
+        df_cut = self.df[(self.df["Date"] >= date_beg) & (self.df["Date"] <= date_end)]
+        first_month = df_cut.iloc[0]['Date'].month
+        last_month = df_cut.iloc[-1]['Date'].month
+        months = {i: list(calendar.month_name)[i] for i in range(first_month, last_month + 1)}
+        categories = sorted(df_cut["Category"].unique())
+        report = pd.DataFrame(index=categories)
+        for idx, month in months.items():
+            month_beg = datetime(year, idx, 1)
+            last_day = calendar.monthrange(year, idx)[-1]
+            month_end = datetime(year, idx, last_day)
+            month_cut = df_cut[(df_cut["Date"] >= month_beg) & (df_cut["Date"] <= month_end)]
+            grouped = month_cut.groupby("Category").agg({"Price": "sum"}).rename({"Price": month}, axis=1)
+            report = report.join(grouped)
+        report = report.fillna(0).round().astype(int)
+        self.show_annual_report(year=year, report=report)
+    
     def show_result(self, df_cut=None, period=None, yearly=False):
         '''
         Here we show the result
@@ -93,3 +119,14 @@ class MoneySpendings:
         total = df_cut.groupby("Who").agg({"Price": "sum"}).sort_values("Price", ascending=False) 
         total["Price_apt"] = total["Price"] + price_apt / 2
         display(total)
+        
+    def show_annual_report(self, year=None, report=None):
+        '''
+        Here we show the anual report
+        
+        Args:
+            year (int): The number of the year
+            report (DataFrame): Dataframe grouped by category with information for each month of the year
+        '''
+        print(f"Annual report {year}")
+        display(report)
