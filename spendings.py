@@ -43,8 +43,6 @@ class MoneySpendings:
             year (int): The year
             price_apt (int): Сost of rent for an apartment per month in shekels. Default: None
         '''
-        if price_apt is None:
-            price_apt = self._price_apt
         if type(month) == str:
             month = month.capitalize()
             month = list(calendar.month_name).index(month)
@@ -85,15 +83,19 @@ class MoneySpendings:
         months = {i: list(calendar.month_name)[i] for i in range(first_month, last_month + 1)}
         categories = sorted(df_cut["Category"].unique())
         report = pd.DataFrame(index=categories)
+        data_name = []
         for idx, month in months.items():
             month_beg = datetime(year, idx, 1)
             last_day = calendar.monthrange(year, idx)[-1]
             month_end = datetime(year, idx, last_day)
             month_cut = df_cut[(df_cut["Date"] >= month_beg) & (df_cut["Date"] <= month_end)]
+            data_name.append((month, "Pasha", month_cut[month_cut["Who"] == 'Pasha']["Price"].sum().round(2)))
+            data_name.append((month, "Alona", month_cut[month_cut["Who"] == 'Alona']["Price"].sum().round(2)))
             grouped = month_cut.groupby("Category").agg({"Price": "sum"}).rename({"Price": month}, axis=1)
             report = report.join(grouped)
         report = report.fillna(0).round().astype(int)
-        self.show_annual_report(year=year, report=report)
+        report_name = pd.DataFrame(data_name, columns=['Month', 'Name', 'Price'])
+        self.show_annual_report(year=year, report=report, report_name=report_name)
     
     def show_result(self, df_cut=None, period=None, yearly=False):
         '''
@@ -120,13 +122,16 @@ class MoneySpendings:
         total["Price_apt"] = total["Price"] + price_apt / 2
         display(total)
         
-    def show_annual_report(self, year=None, report=None):
+    def show_annual_report(self, year=None, report=None, report_name=None):
         '''
         Here we show the anual report
         
         Args:
             year (int): The number of the year
             report (DataFrame): Dataframe grouped by category with information for each month of the year
+            report_name (DataFrame): Dataframe grouped by name with information for each month of the year
         '''
         print(f"Annual report {year}")
         display(report)
+        
+        report_name["Price_apt"] = report_name["Price"] + self._price_apt / 2
