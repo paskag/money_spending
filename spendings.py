@@ -47,11 +47,12 @@ class MoneySpendings:
             month = month.capitalize()
             month = list(calendar.month_name).index(month)
         month_title = list(calendar.month_name)[month]
+        period = f'{month_title} {year}'
         date_beg = datetime(year, month, 1)    
         last_day = calendar.monthrange(year, month)[-1]
         date_end = datetime(year, month, last_day) 
         df_cut = self.df[(self.df["Date"] >= date_beg) & (self.df["Date"] <= date_end)]
-        self.show_result(df_cut, period=month_title)
+        self.show_result(df_cut, period=period)
         
     def info_by_year(self, year=2024, price_apt=None):
         '''
@@ -135,3 +136,5 @@ class MoneySpendings:
         display(report)
         
         report_name["Price_apt"] = report_name["Price"] + self._price_apt / 2
+        report_name = report_name.set_index(['Month', 'Name'])
+        display(report_name)
