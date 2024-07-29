@@ -18,7 +18,7 @@
 ![Info by month](https://github.com/user-attachments/assets/51599464-b73f-42e9-ab20-e1c2c97cb800)
 
 #### An example of the result of the annual_report function
-
+![Annual_report](https://github.com/user-attachments/assets/a3401251-7dbc-4dcd-badc-1b53d4acf496)
 
 #### Video example
 
