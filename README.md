@@ -16,7 +16,6 @@
 ## Results
 #### The program produces two tables as a result. The first one shows the expenses grouped by category. The second table shows total expenditures grouped by name. 
 
-![Example](https://drive.google.com/uc?export=view&id=1t5vbl0P-o4iF18EBTPrthFrxVARscqfn)
 ![Info by month](https://github.com/user-attachments/assets/51599464-b73f-42e9-ab20-e1c2c97cb800)
 
 
