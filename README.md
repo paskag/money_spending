@@ -14,8 +14,12 @@
 
 
 ## Results
-#### The program produces two tables as a result. The first one shows the expenses grouped by category. The second table shows total expenditures grouped by name. 
 
+### An example of the result of the info_by_month function
 ![Info by month](https://github.com/user-attachments/assets/51599464-b73f-42e9-ab20-e1c2c97cb800)
 
+### An example of the result of the annual_report function
+
+
+### Video example
 
