@@ -111,8 +111,8 @@ class MoneySpendings:
         final_price = df_cut['Price'].sum().round(2)
         final_price_apt = final_price + price_apt
         
-        print(f"Spendings in {period}: {final_price} sheckels")
-        print(f"Spendings in {period} with the appartment: {final_price_apt} sheckels")
+        print(f"Spendings in {period}: {final_price:.2f} sheckels")
+        print(f"Spendings in {period} with the appartment: {final_price_apt:.2f} sheckels")
 
         category = df_cut.groupby("Category").agg({"Price": "sum", "Category": "count"}).sort_values("Price", ascending=False)
         category = category.rename({"Category": "Count"}, axis=1)
