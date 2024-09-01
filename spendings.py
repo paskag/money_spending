@@ -114,9 +114,13 @@ class MoneySpendings:
         print(f"Spendings in {period}: {final_price:.2f} sheckels")
         print(f"Spendings in {period} with the appartment: {final_price_apt:.2f} sheckels")
 
-        category = df_cut.groupby("Category").agg({"Price": "sum", "Category": "count"}).sort_values("Price", ascending=False)
-        category = category.rename({"Category": "Count"}, axis=1)
-        display(category)
+        category_who = df_cut.groupby(["Category", 'Who']).agg({"Price": "sum", "Category": "count"})
+        category_who = category_who.rename({"Category": "Count"}, axis=1)
+        category_who = category_who.sort_values(["Category", 'Who'])
+        category_who['Total'] = category_who.groupby('Category')['Price'].transform('sum')
+        category_who = category_who.sort_values(['Total', 'Price'], ascending=False)
+        category_who['Total'] = category_who['Total'].transform(lambda x: x.mask(x.duplicated(), ''))
+        display(category_who)
 
         #total expenses grouped by name
         total = df_cut.groupby("Who").agg({"Price": "sum"}).sort_values("Price", ascending=False) 
