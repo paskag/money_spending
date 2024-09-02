@@ -10,12 +10,13 @@
 
  * **info_by_year** - You can get information on your spending for the year
 
+
  * **annual report** - You can get a detailed annual report. Information will be provided for each month.
 
 
 ## Results
 #### An example of the result of the info_by_month function
-![Info by month](https://github.com/user-attachments/assets/51599464-b73f-42e9-ab20-e1c2c97cb800)
+![Info by month](https://github.com/user-attachments/assets/5bc48979-8575-48ea-af60-e29c11f0b438)
 
 #### An example of the result of the annual_report function
 ![Annual_report](https://github.com/user-attachments/assets/a3401251-7dbc-4dcd-badc-1b53d4acf496)
