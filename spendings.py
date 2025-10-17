@@ -4,17 +4,19 @@ from IPython.display import display
 import calendar
 
 class MoneySpendings:
-    def __init__(self, df=None, price_apt=5700):
+    def __init__(self, df=None, price_apt=5850, subscriptions=None):
         '''
         Initializing 
 
         Args:
             df (DataFrame): File with spending records
             price_apt (int): Сost of rent for an apartment per month in shekels. Default: 5700
+            subscriptions (list): List of dictionary of subscription costs. Default: None
         '''
         self.df = df
         self._price_apt = price_apt
         self.df = self.df.rename({column: column.strip() for column in self.df.columns}, axis=1)
+        self._subscriptions = subscriptions
             
     def info_by_period(self, date_beg="", date_end="", price_apt=None):
         '''
@@ -103,12 +105,27 @@ class MoneySpendings:
         Here we show the result
         
         Args:
-            df (DataFrame): Dataframe in giving dates
+            df_cut (DataFrame): Dataframe in giving dates
             period (str): The time period for which the result is calculated.
             yearly (bool): A marker that indicates whether it is an annual report or not: Default: False
         '''
         price_apt = self._price_apt * [1, df_cut['Date'].dt.to_period('M').nunique()][yearly] #count how many months
         final_price = df_cut['Price'].sum().round(2)
+        
+        if self._subscriptions is not None:
+            df_subscriptions_show = pd.DataFrame(self._subscriptions)
+            df_subscriptions_show = df_subscriptions_show.sort_values("Price", ascending=False)
+            df_subscriptions = df_subscriptions_show.copy()
+            df_subscriptions_show = df_subscriptions_show.set_index("What")
+            
+            final_price_subscriptions = df_subscriptions["Price"].sum()
+            final_price += final_price_subscriptions
+            
+            df_subscriptions["Category"] = "Subscriptions"
+            df_subscriptions["Date"] = 'Date'
+            df_subscriptions = df_subscriptions[["Date", "Who", "What", "Category", "Price"]]
+            df_cut = pd.concat([df_cut, df_subscriptions], ignore_index=True)
+             
         final_price_apt = final_price + price_apt
         
         print(f"Spendings in {period}: {final_price:.2f} sheckels")
@@ -122,6 +139,9 @@ class MoneySpendings:
         category_who['Total'] = category_who['Total'].transform(lambda x: x.mask(x.duplicated(), ''))
         display(category_who)
 
+        if self._subscriptions is not None:
+            display(df_subscriptions_show)
+       
         #total expenses grouped by name
         total = df_cut.groupby("Who").agg({"Price": "sum"}).sort_values("Price", ascending=False) 
         total["Price_apt"] = total["Price"] + price_apt / 2
